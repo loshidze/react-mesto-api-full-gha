@@ -1,0 +1,16 @@
+.content {
+  margin: 40px calc(200 / 1280 * 100%) 0;
+}
+
+@media screen and (max-width: 1024px) {
+  .content {
+    margin: 40px calc(100 / 1280 * 100%) 0;
+  }
+}
+
+@media screen and (max-width: 880px) {
+  .content {
+    margin: 42px 19px 0;
+  }
+}
+
