@@ -83,8 +83,8 @@ class Api {
 }
 
 const api = new Api({
-  // url: 'https://api.belevkin.nomoredomains.monster',
-  url: 'http://localhost:3001',
+  url: 'https://api.belevkin.nomoredomains.monster',
+  // url: 'http://localhost:3001',
   headers: {
     'Content-Type': 'application/json',
     authorization: `Bearer ${localStorage.getItem('jwt')}`

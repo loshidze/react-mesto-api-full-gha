@@ -45,8 +45,8 @@ class Auth {
 }
 
 const auth = new Auth({
-  // url: 'https://api.belevkin.nomoredomains.monster',
-  url: 'http://localhost:3001',
+  url: 'https://api.belevkin.nomoredomains.monster',
+  // url: 'http://localhost:3001',
 })
 
 export {auth}
