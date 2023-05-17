@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route, Routes, useNavigate, Navigate } from 'react-router-dom';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
-import { api } from '../utils/api';
+import { Api } from '../utils/api';
 import ProtectedRoute from './ProtectedRoute';
 import Header from './Header';
 import Main from './Main';
@@ -13,7 +13,7 @@ import AddPlacePopup from './AddPlacePopup';
 import Register from './Register';
 import Login from './Login';
 import InfoTooltip from './InfoTooltip';
-import { auth } from '../utils/auth';
+import * as auth from '../utils/auth';
 
 function App() {
 
@@ -29,22 +29,124 @@ function App() {
   const [userEmail, setUserEmail] = React.useState('');
   const [isLoading, setIsLoading] = React.useState(false);
 
+  const api = new Api({
+    // url: 'https://api.belevkin.nomoredomains.monster',
+    url: 'http://localhost:3001',
+    headers: {
+      'Content-Type': 'application/json',
+      authorization: `Bearer ${localStorage.getItem('jwt')}`
+    }
+  })
+
   const navigate = useNavigate();
 
+  // React.useEffect(() => {
+  //   const jwt = localStorage.getItem('jwt');
+  //   if (jwt) {
+  //     auth
+  //       .checkToken(jwt)
+  //       .then((res) => {
+  //         if (res) {
+  //           setCurrentUser(res)
+  //           setLoggedIn(true);
+  //           navigate('/', {replace: true});
+  //           setUserEmail(res.email);
+  //         }
+  //       })
+  //       .catch((err) => console.log(err));
+  //   }
+  // }, []);
+
   React.useEffect(() => {
-    Promise.all([api.getProfileInfo(), api.getCards()])
-      .then(([profileData, cards]) => {
-        setCurrentUser(profileData);
-        setCards(cards);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, [])
+    if (loggedIn) {
+      api.updateToken();
+
+      Promise.all([api.getProfileInfo(), api.getCards()])
+        .then(([profileData, cards]) => {
+          setCurrentUser(profileData);
+          setCards(cards.reverse());
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, [loggedIn])
+
+  function tokenCheck() {
+    if (localStorage.getItem('jwt')) {
+      const jwt = localStorage.getItem('jwt');
+      auth.checkToken(jwt)
+        .then((res) => {
+          if(res) {
+            setCurrentUser(res)
+            setLoggedIn(true);
+            setUserEmail(res.email);
+            navigate('/', {replace: true});
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+    }
+  }
 
   React.useEffect(() => {
     tokenCheck();
-  }, [])
+  }, [navigate])
+
+  function handleRegister(values) {
+    auth.register(values.password, values.email)
+      .then((res) => {
+        navigate('/log-in', {replace: true});
+        setIsRegistered(true);
+      })
+      .catch((err) => {
+        setIsRegistered(false);
+        console.log(err);
+      })
+      .finally(() => {
+        setIsRegisteredPopupOpen(true);
+      })
+  }
+
+  function handleLogin(values) {
+    if (!values.password || !values.email) {
+      return;
+    }
+    auth.authorize(values.password, values.email)
+      .then((res) => {
+        if (res.token) {
+          localStorage.setItem('jwt', res.token);
+          setUserEmail(values.email);
+          setLoggedIn(true);
+          navigate('/', {replace: true});
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+  }
+
+  function handleLogout() {
+    localStorage.removeItem('jwt');
+    setUserEmail('');
+  }
+
+  // React.useEffect(() => {
+  //   if (loggedIn) {
+  //     api.updateToken();
+
+  //     Promise.all([api.getProfileInfo(), api.getCards()])
+  //       .then(([cards, user]) => {
+  //         setCurrentUser(user.data);
+  //         setCards(cards.data);
+  //         userEmail(user.data.email);
+  //       })
+  //       .catch((err) => {
+  //         console.log(err);
+  //       });
+  //   }
+  // }, [])
 
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(true);
@@ -150,61 +252,6 @@ function App() {
     .finally(() => {
       setIsLoading(false);
     })
-  }
-
-  function handleLogout() {
-    localStorage.removeItem('jwt');
-    setUserEmail('');
-  }
-
-  function tokenCheck() {
-    if (localStorage.getItem('jwt')) {
-      const jwt = localStorage.getItem('jwt');
-      auth.checkToken(jwt)
-        .then((res) => {
-          if(res) {
-            setLoggedIn(true);
-            setUserEmail(res.data.email);
-            navigate('/', {replace: true});
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        })
-    }
-  }
-
-  function handleRegister(values) {
-    auth.register(values.password, values.email)
-      .then((res) => {
-        navigate('/log-in', {replace: true});
-        setIsRegistered(true);
-      })
-      .catch((err) => {
-        setIsRegistered(false);
-        console.log(err);
-      })
-      .finally(() => {
-        setIsRegisteredPopupOpen(true);
-      })
-  }
-
-  function handleLogin(values) {
-    if (!values.password || !values.email) {
-      return;
-    }
-    auth.authorize(values.password, values.email)
-      .then((res) => {
-        if (res.token) {
-          localStorage.setItem('jwt', res.token);
-          setUserEmail(values.email);
-          setLoggedIn(true);
-          navigate('/', {replace: true});
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      })
   }
 
   return (

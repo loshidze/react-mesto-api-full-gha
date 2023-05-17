@@ -16,7 +16,12 @@ const createCard = (req, res, next) => {
 
   Card.create({ name, link, owner: _id })
     .then((dataCard) => {
-      res.status(201).send(dataCard);
+      Card.findOne(dataCard)
+        .populate(['likes', 'owner'])
+        .then((card) => {
+          res.send(card);
+        })
+        .catch(next);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -28,7 +33,7 @@ const createCard = (req, res, next) => {
 
 const getAllCards = (req, res, next) => {
   Card.find({})
-    .populate('owner')
+    .populate(['likes', 'owner'])
     .then((cards) => res.send(cards))
     .catch(next);
 };
@@ -59,6 +64,7 @@ const likeCard = (req, res, next) => {
     { $addToSet: { likes: req.user._id } },
     { new: true },
   )
+    .populate(['likes', 'owner'])
     .then((card) => checkCard(card, res))
     .catch(next);
 };
@@ -69,6 +75,7 @@ const dislikeCard = (req, res, next) => {
     { $pull: { likes: req.user._id } },
     { new: true },
   )
+    .populate(['likes', 'owner'])
     .then((card) => checkCard(card, res))
     .catch(next);
 };

@@ -1,7 +1,6 @@
 class Api {
-  constructor({url, headers}) {
+  constructor({url}) {
     this._url = url;
-    this._headers = headers;
   }
 
   _request(url, options) {
@@ -18,13 +17,19 @@ class Api {
 
   getProfileInfo() {
     return this._request(`${this._url}/users/me`, {
-        headers: this._headers
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+        'Content-type': 'application/json'
+      }
     })
   }
 
   setProfileInfo(data) {
     return this._request(`${this._url}/users/me`, {
-      headers: this._headers,
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+        'Content-type': 'application/json'
+      },
       method: 'PATCH',
       body: JSON.stringify(data)
     })
@@ -32,13 +37,19 @@ class Api {
 
   getCards() {
     return this._request(`${this._url}/cards`, {
-      headers: this._headers
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+        'Content-type': 'application/json'
+      }
     })
   }
 
   setCard(data) {
     return this._request(`${this._url}/cards`, {
-      headers: this._headers,
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+        'Content-type': 'application/json'
+      },
       method: 'POST',
       body: JSON.stringify(data)
     })
@@ -46,9 +57,14 @@ class Api {
 
   changeAvatar(data) {
     return this._request(`${this._url}/users/me/avatar`, {
-      headers: this._headers,
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+        'Content-type': 'application/json'
+      },
       method: 'PATCH',
-      body: JSON.stringify(data)
+      body: JSON.stringify({
+        avatar: data.avatar,
+      })
     })
   }
 
@@ -62,33 +78,60 @@ class Api {
 
   like(id) {
     return this._request(`${this._url}/cards/${id}/likes`, {
-      headers: this._headers,
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+        'Content-type': 'application/json'
+      },
       method: 'PUT'
     })
   }
 
   dislike(id) {
     return this._request(`${this._url}/cards/${id}/likes`, {
-      headers: this._headers,
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+        'Content-type': 'application/json'
+      },
       method: 'DELETE'
     })
   }
 
   deleteCard(id) {
     return this._request(`${this._url}/cards/${id}`, {
-      headers: this._headers,
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+        'Content-type': 'application/json'
+      },
       method: 'DELETE'
     })
   }
+
+  checkToken(token) {
+    return fetch(`${this._url}/users/me`, {
+      method: 'GET',
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization" : `Bearer ${token}`
+    }
+  })
+    .then(this._checkResponse);
+  }
+
+  updateToken() {
+    this.headers = {
+      'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      'Content-Type': 'application/json',
+    }
+  }
 }
 
-const api = new Api({
-  url: 'https://api.belevkin.nomoredomains.monster',
-  // url: 'http://localhost:3001',
-  headers: {
-    'Content-Type': 'application/json',
-    authorization: `Bearer ${localStorage.getItem('jwt')}`
-  }
-})
+// const api = new Api({
+//   // url: 'https://api.belevkin.nomoredomains.monster',
+//   url: 'http://localhost:3001',
+//   headers: {
+//     'Content-Type': 'application/json',
+//     authorization: `Bearer ${localStorage.getItem('jwt')}`
+//   }
+// })
 
-export {api}
+export {Api}

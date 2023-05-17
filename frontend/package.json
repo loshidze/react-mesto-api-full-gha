@@ -1,5 +1,5 @@
 {
-  "homepage": "https://belevkin.nomoredomains.monster/",
+  "homepage": "http://localhost:3001/",
   "name": "react-mesto-auth",
   "version": "0.1.0",
   "private": true,
