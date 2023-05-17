@@ -4,12 +4,12 @@
   
 Пожалуйста, прикрепите в это описание ссылку на сайт, размещенный на Яндекс.Облаке.
 
-Адрес репозитория: https://github.com/...
+Адрес репозитория: https://github.com/loshidze/react-mesto-api-full-gha
 
-## Ссылки на проект:
+## Ссылки на проект
 
-IP-адрес x.x.x.x
+IP-адрес 84.201.143.219
 
-Frontend https://...
+Frontend https://belevkin.nomoredomains.monster
 
-Backend https://...
+Backend https://api.belevkin.nomoredomains.monster

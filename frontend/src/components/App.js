@@ -40,23 +40,6 @@ function App() {
 
   const navigate = useNavigate();
 
-  // React.useEffect(() => {
-  //   const jwt = localStorage.getItem('jwt');
-  //   if (jwt) {
-  //     auth
-  //       .checkToken(jwt)
-  //       .then((res) => {
-  //         if (res) {
-  //           setCurrentUser(res)
-  //           setLoggedIn(true);
-  //           navigate('/', {replace: true});
-  //           setUserEmail(res.email);
-  //         }
-  //       })
-  //       .catch((err) => console.log(err));
-  //   }
-  // }, []);
-
   React.useEffect(() => {
     if (loggedIn) {
       api.updateToken();
@@ -131,22 +114,6 @@ function App() {
     localStorage.removeItem('jwt');
     setUserEmail('');
   }
-
-  // React.useEffect(() => {
-  //   if (loggedIn) {
-  //     api.updateToken();
-
-  //     Promise.all([api.getProfileInfo(), api.getCards()])
-  //       .then(([cards, user]) => {
-  //         setCurrentUser(user.data);
-  //         setCards(cards.data);
-  //         userEmail(user.data.email);
-  //       })
-  //       .catch((err) => {
-  //         console.log(err);
-  //       });
-  //   }
-  // }, [])
 
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(true);
