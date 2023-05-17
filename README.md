@@ -8,7 +8,7 @@
 
 ## Ссылки на проект
 
-IP-адрес 84.201.143.219
+IP 84.201.143.219
 
 Frontend https://belevkin.nomoredomains.monster
 
