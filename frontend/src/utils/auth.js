@@ -51,7 +51,7 @@
 
 // export {auth}
 
-const url = 'http://localhost:3001';
+const url = 'https://api.belevkin.nomoredomains.monster';
 
 function checkResponse(res) {
   if (res.ok) {
