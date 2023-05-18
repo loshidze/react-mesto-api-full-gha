@@ -1,4 +1,5 @@
-const url = 'https://api.belevkin.nomoredomains.monster';
+// const url = 'https://api.belevkin.nomoredomains.monster';
+const url = 'http://localhost:3001';
 
 function checkResponse(res) {
   if (res.ok) {
